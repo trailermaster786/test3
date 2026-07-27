@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  password     String
+  phone        String?
+  role         String    @default("customer") // customer, driver, admin
+  avatar       String?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  addresses       Address[]
+  paymentMethods  PaymentMethod[]
+  orders          Order[]          @relation("CustomerOrders")
+  drivenOrders    Order[]          @relation("DriverOrders")
+  assignedTruck   Truck?
+  notifications   Notification[]
+  salesTargets    SalesTarget[]
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  label     String
+  street    String
+  city      String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+}
+
+model PaymentMethod {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // cash, card
+  last4     String?
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  liter       Float
+  image       String?
+  isActive    Boolean  @default(true)
+  stock       Int      @default(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orderItems OrderItem[]
+}
+
+model Bottle {
+  id          String   @id @default(cuid())
+  qrCode      String   @unique
+  status      String   @default("IN_FACTORY") // IN_FACTORY, LOADED_ON_TRUCK, DELIVERED, COLLECTED, BACK_AT_FACTORY, FLAGGED_FOR_DESTRUCTION
+  refillCount Int      @default(0)
+  maxRefills  Int      @default(30)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events BottleEvent[]
+}
+
+model BottleEvent {
+  id        String   @id @default(cuid())
+  bottleId  String
+  type      String   // GENERATED, LOADED, DELIVERED, COLLECTED, RETURNED, DESTROYED, SCANNED
+  orderId   String?
+  userId    String?
+  notes     String?
+  createdAt DateTime @default(now())
+
+  bottle Bottle @relation(fields: [bottleId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  status        String   @default("PENDING") // PENDING, CONFIRMED, ASSIGNED, IN_TRANSIT, DELIVERED, CANCELLED
+  userId        String
+  driverId      String?
+  addressId     String?
+  totalAmount   Float
+  discount      Float    @default(0)
+  finalAmount   Float
+  paymentMethod String   @default("cash")
+  paymentStatus String   @default("pending") // pending, paid, failed
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user        User          @relation("CustomerOrders", fields: [userId], references: [id])
+  driver      User?         @relation("DriverOrders", fields: [driverId], references: [id])
+  address     Address?      @relation(fields: [addressId], references: [id])
+  items       OrderItem[]
+  notifications Notification[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  unitPrice Float
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model PromoOffer {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  description String?
+  type        String   // percentage, fixed
+  value       Float
+  minOrder    Float    @default(0)
+  maxUses     Int      @default(100)
+  usedCount   Int      @default(0)
+  isActive    Boolean  @default(true)
+  startsAt    DateTime?
+  endsAt      DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model Truck {
+  id        String   @id @default(cuid())
+  plate     String   @unique
+  model     String
+  capacity  Int
+  isActive  Boolean  @default(true)
+  driverId  String?   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  driver User? @relation(fields: [driverId], references: [id])
+}
+
+model SalesTarget {
+  id             String   @id @default(cuid())
+  userId         String
+  targetType     String   @default("monthly")
+  period         String
+  targetAmount   Float
+  achievedAmount Float    @default(0)
+  month          Int
+  year           Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String?
+  role      String?
+  type      String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  orderId   String?
+  createdAt DateTime @default(now())
+
+  user  User?  @relation(fields: [userId], references: [id])
+  order Order? @relation(fields: [orderId], references: [id])
+}
