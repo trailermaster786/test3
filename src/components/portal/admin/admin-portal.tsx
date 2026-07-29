@@ -11,9 +11,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
-  Droplets, Package, Users, Truck, BarChart3, Settings, LogOut, Home,
-  Search, Plus, Bell, Target, FileText, Loader2, ShoppingCart, QrCode,
-  Trash2, RefreshCw, ChevronLeft, Eye, Edit, UserCheck, AlertTriangle, Sparkles, CheckCircle2, MapPin, XCircle
+  Droplets, Package, Users, Truck, BarChart3, LogOut, Home,
+  Plus, Bell, Target, FileText, ShoppingCart,
+  Trash2, RefreshCw, Eye, Edit, UserCheck, Sparkles, CheckCircle2, MapPin, XCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatCurrency, formatDate, formatDateTime } from '@/lib/utils';
@@ -637,7 +637,7 @@ export default function AdminPortal() {
     if (orderStatusFilter !== 'all' && o.status !== orderStatusFilter) return false;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      return o.user.name.toLowerCase().includes(q) || o.user.email.toLowerCase().includes(q);
+      return o.user?.name?.toLowerCase().includes(q) || o.user?.email?.toLowerCase().includes(q);
     }
     return true;
   });
@@ -938,9 +938,10 @@ export default function AdminPortal() {
                       {recentOrders.slice(0, 5).map((order) => (
                         <TableRow key={order.id}>
                           <TableCell className="font-mono text-gray-300">#{order.id.slice(0, 8)}</TableCell>
-                          <TableCell className="text-gray-300">{order.user.name}</TableCell>
-                          <TableCell className="text-gray-300">{formatCurrency(order.finalAmount)}</TableCell>
-                          <TableCell>
+                           <TableCell className="text-gray-300">{order.user?.name || 'Unknown'}</TableCell>
+                           <TableCell className="text-gray-300">{formatCurrency(order.finalAmount)}</TableCell>
+                           <TableCell>
+
                             <Badge className={ORDER_STATUS_COLORS[order.status]}>
                               {ORDER_STATUS_LABELS[order.status]}
                             </Badge>
@@ -1152,9 +1153,9 @@ export default function AdminPortal() {
                         const nextStatus = getNextValidStatus(order.status);
                         return (
                         <TableRow key={order.id}>
-                          <TableCell className="font-mono text-gray-300">#{order.id.slice(0, 8)}</TableCell>
-                          <TableCell className="text-gray-300">{order.user.name}</TableCell>
-                          <TableCell className="text-gray-300">{order.driver?.name || <span className="text-gray-500">Unassigned</span>}</TableCell>
+                           <TableCell className="font-mono text-gray-300">#{order.id.slice(0, 8)}</TableCell>
+                           <TableCell className="text-gray-300">{order.user?.name || 'Unknown'}</TableCell>
+                           <TableCell className="text-gray-300">{order.driver?.name || <span className="text-gray-500">Unassigned</span>}</TableCell>
                           <TableCell className="text-gray-300">{formatCurrency(order.finalAmount)}</TableCell>
                           <TableCell>
                             <Badge className={ORDER_STATUS_COLORS[order.status]}>

@@ -14,6 +14,7 @@ export const BOTTLE_STATUSES = {
   COLLECTED: 'COLLECTED',
   BACK_AT_FACTORY: 'BACK_AT_FACTORY',
   FLAGGED_FOR_DESTRUCTION: 'FLAGGED_FOR_DESTRUCTION',
+  DESTROYED: 'DESTROYED',
 } as const;
 
 export const BOTTLE_EVENT_TYPES = {
@@ -51,6 +52,7 @@ export const BOTTLE_STATUS_LABELS: Record<string, string> = {
   COLLECTED: 'Collected',
   BACK_AT_FACTORY: 'Back at Factory',
   FLAGGED_FOR_DESTRUCTION: 'Flagged for Destruction',
+  DESTROYED: 'Destroyed',
 };
 
 export const BOTTLE_STATUS_COLORS: Record<string, string> = {
@@ -60,6 +62,7 @@ export const BOTTLE_STATUS_COLORS: Record<string, string> = {
   COLLECTED: 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30',
   BACK_AT_FACTORY: 'bg-purple-500/20 text-purple-300 border border-purple-500/30',
   FLAGGED_FOR_DESTRUCTION: 'bg-red-500/20 text-red-300 border border-red-500/30',
+  DESTROYED: 'bg-gray-500/20 text-gray-300 border border-gray-500/30',
 };
 
 export const ROLES = {

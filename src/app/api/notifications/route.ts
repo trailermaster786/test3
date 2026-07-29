@@ -37,6 +37,19 @@ export async function PATCH(request: Request) {
     const body = await request.json();
     const { id } = body;
 
+    if (!id) {
+      return NextResponse.json({ error: 'Notification ID is required' }, { status: 400 });
+    }
+
+    const notification = await prisma.notification.findUnique({ where: { id } });
+    if (!notification) {
+      return NextResponse.json({ error: 'Notification not found' }, { status: 404 });
+    }
+
+    if (notification.userId && notification.userId !== user.userId && user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     await prisma.notification.update({
       where: { id },
       data: { isRead: true },

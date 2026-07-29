@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { CheckCircle2, Clock, Truck, Package, MapPin, XCircle } from 'lucide-react';
+import { CheckCircle2, Truck, Package, MapPin, XCircle } from 'lucide-react';
 
 interface TimelineStep {
   status: string;

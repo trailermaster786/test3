@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
-import { getNextStatus, shouldFlagForDestruction } from '@/lib/bottle-logic';
+import { shouldFlagForDestruction } from '@/lib/bottle-logic';
+import { BOTTLE_EVENT_TYPES } from '@/lib/constants';
 
 export async function POST(request: Request) {
   try {
@@ -15,6 +16,11 @@ export async function POST(request: Request) {
 
     if (!qrCode || !type) {
       return NextResponse.json({ error: 'QR code and type are required' }, { status: 400 });
+    }
+
+    const validTypes = Object.values(BOTTLE_EVENT_TYPES);
+    if (!validTypes.includes(type)) {
+      return NextResponse.json({ error: `Invalid event type. Must be one of: ${validTypes.join(', ')}` }, { status: 400 });
     }
 
     const bottle = await prisma.bottle.findUnique({ where: { qrCode } });
@@ -41,7 +47,7 @@ export async function POST(request: Request) {
         newRefillCount = bottle.refillCount + 1;
         break;
       default:
-        nextStatus = type;
+        return NextResponse.json({ error: `Unhandled event type: ${type}` }, { status: 400 });
     }
 
     // Check if bottle should be flagged for destruction

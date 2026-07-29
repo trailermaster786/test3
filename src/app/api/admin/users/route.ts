@@ -40,6 +40,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { name, email, password, phone, role } = body;
 
+    if (!name || !email || !password) {
+      return NextResponse.json({ error: 'Name, email, and password are required' }, { status: 400 });
+    }
+
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json({ error: 'Email already exists' }, { status: 400 });
@@ -67,6 +71,10 @@ export async function PATCH(request: Request) {
 
     const body = await request.json();
     const { id, name, email, phone, role, isActive } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    }
 
     const updatedUser = await prisma.user.update({
       where: { id },

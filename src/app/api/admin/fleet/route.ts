@@ -33,6 +33,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { plate, model, capacity, driverId } = body;
 
+    if (!plate || !model || !capacity) {
+      return NextResponse.json({ error: 'Plate, model, and capacity are required' }, { status: 400 });
+    }
+
     const existingTruck = await prisma.truck.findUnique({ where: { plate } });
     if (existingTruck) {
       return NextResponse.json({ error: 'Plate already exists' }, { status: 400 });
@@ -58,6 +62,10 @@ export async function PATCH(request: Request) {
 
     const body = await request.json();
     const { id, plate, model, capacity, driverId, isActive } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: 'Truck ID is required' }, { status: 400 });
+    }
 
     const truck = await prisma.truck.update({
       where: { id },

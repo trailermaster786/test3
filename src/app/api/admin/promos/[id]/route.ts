@@ -19,7 +19,7 @@ export async function PATCH(
     const promo = await prisma.promoOffer.update({
       where: { id },
       data: {
-        code,
+        ...(code !== undefined && { code: code.toUpperCase() }),
         description,
         type,
         value: value ? parseFloat(value) : undefined,

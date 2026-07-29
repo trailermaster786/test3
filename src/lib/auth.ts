@@ -2,7 +2,12 @@ import { SignJWT, jwtVerify } from 'jose';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'aquatrack-super-secret-key-2024');
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? '' : 'aquatrack-dev-secret-key')
+);
+if (!JWT_SECRET.byteLength) {
+  throw new Error('JWT_SECRET environment variable is required in production');
+}
 const COOKIE_NAME = 'aquatrack-token';
 
 export interface JWTPayload {

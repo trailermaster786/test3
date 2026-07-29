@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Droplets, ShoppingCart, Package, User, LogOut, Home, Search,
-  Plus, Minus, Trash2, QrCode, ChevronLeft, Loader2, CheckCircle2, Clock, Truck, Sparkles, MapPin, XCircle, Save, Bell
+  Plus, Minus, Trash2, QrCode, Loader2, CheckCircle2, Clock, Truck, Sparkles, MapPin, XCircle, Save, Bell
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatCurrency, formatDate, formatDateTime } from '@/lib/utils';

@@ -12,8 +12,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { count } = body;
 
-    if (!count || count <= 0 || count > 1000) {
-      return NextResponse.json({ error: 'Count must be between 1 and 1000' }, { status: 400 });
+    if (!count || !Number.isInteger(count) || count <= 0 || count > 1000) {
+      return NextResponse.json({ error: 'Count must be an integer between 1 and 1000' }, { status: 400 });
     }
 
     const bottles = [];
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     let startNum = 1;
     if (lastBottle) {
       const lastNum = parseInt(lastBottle.qrCode.replace('AQUA-', ''));
-      startNum = lastNum + 1;
+      startNum = isNaN(lastNum) ? 1 : lastNum + 1;
     }
 
     for (let i = 0; i < count; i++) {

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/stores/app-store';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Droplets, Loader2, ArrowRight, Sparkles, Shield, Truck, Package } from 'lucide-react';
 import { toast } from 'sonner';

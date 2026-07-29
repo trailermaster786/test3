@@ -7,7 +7,7 @@ import {
   Loader2, CheckCircle2, Clock, UserCheck, Phone, MapPin, Sparkles, Bell, Save
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { formatCurrency, formatDate, formatDateTime } from '@/lib/utils';
+import { formatCurrency, formatDateTime } from '@/lib/utils';
 import {
   ORDER_STATUS_LABELS, ORDER_STATUS_COLORS,
   BOTTLE_STATUS_LABELS, BOTTLE_STATUS_COLORS,
@@ -521,7 +521,7 @@ export default function DriverPortal() {
                           <div className="flex items-start gap-3">
                             {getStatusIcon(order.status)}
                             <div>
-                              <p className="font-medium text-white">{order.user.name}</p>
+                              <p className="font-medium text-white">{order.user?.name || 'Unknown'}</p>
                               <p className="text-sm text-gray-400 flex items-center gap-1">
                                 <MapPin className="w-3 h-3" />
                                 {order.address?.street}, {order.address?.city}
